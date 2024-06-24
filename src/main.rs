@@ -1,7 +1,4 @@
-use std::{
-    fs::*,
-    io::{self, BufWriter, Write},
-};
+use ppm::ppm::Canvas;
 
 const WIDTH: usize = 512;
 const HEIGHT: usize = 512;
@@ -22,22 +19,7 @@ fn bound_cast_success() {
     assert_eq!(bound_cast(255.0), 255);
 }*/
 
-fn save_ppm(filename: &str, buf: &[u32]) -> io::Result<()> {
-    let mut file = BufWriter::new(File::create(filename)?);
-    writeln!(file, "P6").unwrap();
-    writeln!(file, "{WIDTH} {HEIGHT} 255")?;
-    for byte in buf {
-        let colors = [
-            ((byte >> 8 * 2) & 0xFF) as u8,
-            ((byte >> 8 * 1) & 0xFF) as u8,
-            ((byte >> 8 * 0) & 0xFF) as u8,
-        ];
-        file.write(&colors)?;
-    }
-    file.flush()
-}
-
-fn checkerd(buf: &mut [u32], start: Point, size: Rect, fgcol: u32, bgcol: u32, tilesize: usize) {
+fn checkerd(can: &mut Canvas, start: Point, size: Rect, fgcol: u32, bgcol: u32, tilesize: usize) {
     let Rect(width, height) = size;
     let Point(sx, sy) = start;
 
@@ -46,22 +28,26 @@ fn checkerd(buf: &mut [u32], start: Point, size: Rect, fgcol: u32, bgcol: u32, t
             // This logic do not work, though created an interesting pattern.
             //   (x / tilesize) % 2 == 0 && (y / tilesize) % 2 == 0
             // May be the below works for checkerd pattern because Odd + Odd = Even number.
-            buf[(y + sy) * WIDTH + (x + sx)] = if (y / tilesize + x / tilesize) % 2 == 0 {
-                fgcol
-            } else {
-                bgcol
-            };
+            can.put_pixel(
+                x + sx,
+                y + sy,
+                if (y / tilesize + x / tilesize) % 2 == 0 {
+                    fgcol
+                } else {
+                    bgcol
+                },
+            );
         }
     }
 }
 
-fn solid_square(buf: &mut [u32], start: Point, size: Rect, color: u32) {
+fn solid_square(can: &mut Canvas, start: Point, size: Rect, color: u32) {
     let Rect(width, height) = size;
     let Point(sx, sy) = start;
 
     for x in 0..width {
         for y in 0..height {
-            buf[(y + sy) * WIDTH + (x + sx)] = color;
+            can.put_pixel(x + sx, y + sy, color);
         }
     }
 }
@@ -70,7 +56,7 @@ fn frag(u: f32, v: f32) -> (f32, f32, f32) {
     (u.sin(), v.sin(), 0.0)
 }
 
-fn frag_draw(buf: &mut [u32], start: Point, size: Rect) {
+fn frag_draw(can: &mut Canvas, start: Point, size: Rect) {
     let Rect(width, height) = size;
     let Point(sx, sy) = start;
 
@@ -83,28 +69,28 @@ fn frag_draw(buf: &mut [u32], start: Point, size: Rect) {
             let gi = (g * 255.0).floor() as u32;
             let bi = (b * 255.0).floor() as u32;
             let color = (ri << 8 * 2) | (gi << 8 * 1) | bi;
-            buf[(y + sy) * WIDTH + (x + sx)] = color;
+            can.put_pixel(x + sx, y + sy, color);
         }
     }
 }
 
 fn main() {
-    let mut buf = [0xFF_FF_FFu32; WIDTH * HEIGHT];
+    let mut c = Canvas::new(WIDTH, HEIGHT);
 
-    frag_draw(&mut buf, Point(0, 0), Rect(450, 450));
+    frag_draw(&mut c, Point(0, 0), Rect(450, 450));
 
-    solid_square(&mut buf, Point(0, 0), Rect(10, 10), 0xFF0000);
-    solid_square(&mut buf, Point(105, 105), Rect(200, 300), 0x3F5F3F);
-    solid_square(&mut buf, Point(100, 100), Rect(200, 300), 0x00FF00);
-    solid_square(&mut buf, Point(100, 100), Rect(10, 10), 0xFF0000);
+    solid_square(&mut c, Point(0, 0), Rect(10, 10), 0xFF0000);
+    solid_square(&mut c, Point(105, 105), Rect(200, 300), 0x3F5F3F);
+    solid_square(&mut c, Point(100, 100), Rect(200, 300), 0x00FF00);
+    solid_square(&mut c, Point(100, 100), Rect(10, 10), 0xFF0000);
 
     checkerd(
-        &mut buf,
+        &mut c,
         Point(400, 400),
         Rect(100, 100),
         0xFF0000,
         0x000000,
         10,
     );
-    save_ppm("simple.ppm", &buf).unwrap();
+    c.save_to_file("simple.ppm").unwrap();
 }
