@@ -88,8 +88,8 @@ fn main() {
         &mut c,
         Point(400, 400),
         Rect(100, 100),
-        0xFF0000,
-        0x000000,
+        0xFFFFFF,
+        0x404040,
         10,
     );
     c.save_to_file("simple.ppm").unwrap();
