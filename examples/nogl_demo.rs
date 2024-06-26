@@ -1,4 +1,4 @@
-use ppm::ppm::Canvas;
+use ppm::{Canvas, PPMFormats};
 
 const WIDTH: usize = 512;
 const HEIGHT: usize = 512;
@@ -75,7 +75,7 @@ fn frag_draw(can: &mut Canvas, start: Point, size: Rect) {
 }
 
 fn main() {
-    let mut c = Canvas::new(WIDTH, HEIGHT,ppm::ppm::PPMFormats::RAW);
+    let mut c = Canvas::new(WIDTH, HEIGHT, PPMFormats::RAW);
 
     frag_draw(&mut c, Point(0, 0), Rect(450, 450));
 
