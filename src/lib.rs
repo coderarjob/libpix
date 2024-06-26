@@ -1,4 +1,3 @@
-
 pub mod ppm {
     use std::io;
     use std::{
@@ -6,18 +5,26 @@ pub mod ppm {
         io::{BufWriter, Write},
     };
 
+    /// Reference: https://en.wikipedia.org/wiki/Netpbm#Description
+    pub enum PPMFormats {
+        PLAIN,
+        RAW,
+    }
+
     pub struct Canvas {
         width: usize,
         height: usize,
-        area: Vec<u32>
+        format: PPMFormats,
+        area: Vec<u32>,
     }
 
     impl Canvas {
-        pub fn new (width: usize, height: usize) -> Self{
+        pub fn new(width: usize, height: usize, format: PPMFormats) -> Self {
             Canvas {
                 width,
                 height,
-                area: vec![0; width * height]
+                format,
+                area: vec![0; width * height],
             }
         }
 
@@ -26,20 +33,41 @@ pub mod ppm {
             self.area[i] = col;
         }
 
-        pub fn save_to_file(&self, filename: &str) -> io::Result<()> {
-            let mut file = BufWriter::new(File::create(filename)?);
-            writeln!(file, "P6").unwrap();
-            writeln!(file, "{} {} 255", self.width, self.height)?;
-            for byte in &self.area {
-                let colors = [
-                    ((byte >> 8 * 2) & 0xFF) as u8,
-                    ((byte >> 8 * 1) & 0xFF) as u8,
-                    ((byte >> 8 * 0) & 0xFF) as u8,
+        pub fn save_ppm_data<T: Write>(&self, buffer: &mut T) -> io::Result<()> {
+            let magicno = match self.format {
+                PPMFormats::RAW => "P6",
+                PPMFormats::PLAIN => "P3",
+            };
+            write!(buffer, "{}", magicno)?;
+            writeln!(buffer, "{} {} 255", self.width, self.height)?;
+            for color in &self.area {
+                let bytes = [
+                    ((color >> 8 * 2) & 0xFF) as u8,
+                    ((color >> 8 * 1) & 0xFF) as u8,
+                    ((color >> 8 * 0) & 0xFF) as u8,
                 ];
-                file.write(&colors)?;
+
+                if let PPMFormats::PLAIN = self.format {
+                    for byte in bytes {
+                        buffer.write((byte.to_string() + " ").as_bytes())?;
+                    }
+                } else {
+                    buffer.write(&bytes)?;
+                }
             }
+            buffer.flush()
+        }
+
+        pub fn save_to_file(&self, filename: &str) -> io::Result<()> {
+            let mut buffer = Vec::new();
+            let mut file = BufWriter::new(File::create(filename)?);
+            self.save_ppm_data(&mut buffer)?;
+            file.write(&buffer)?;
             file.flush()
         }
-    }
 
+        pub fn fill(&mut self, color: u32) {
+            self.area.fill(color);
+        }
+    }
 }
