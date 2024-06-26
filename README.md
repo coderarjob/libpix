@@ -13,6 +13,8 @@ Here is my attempt to provide a solution.
 
 ## Example:
 
+![Example](/xor.png)
+
 ```rust
 use ppm::{Canvas, PPMFormats};
 
@@ -32,5 +34,4 @@ fn main() {
 }
 ```
 
-![Example](/xor.png)
 
