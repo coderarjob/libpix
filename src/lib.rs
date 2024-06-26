@@ -12,17 +12,18 @@
 //!
 //! ```rust
 //! use ppm::{Canvas, PPMFormats};
-//!
+//! 
+//! const WIDTH: usize = 400;
+//! const HEIGHT: usize = 400;
+//! 
 //! fn main() {
-//!     let mut c = Canvas::new(WIDTH, HEIGHT,PPMFormats::RAW);
-//!     for x in 0..100 {
-//!         for y in 0..100 {
-//!             if (x ^ y) % 9 == 0 {
-//!                 c.put_pixel(x, y, 0xFFFFFF);
-//!             }
+//!     let mut c = Canvas::new(WIDTH, HEIGHT, PPMFormats::RAW);
+//!     for x in 0..WIDTH {
+//!         for y in 0..HEIGHT {
+//!             c.put_pixel(x, y, 0xFF0000);
 //!         }
 //!     }
-//!     c.save_to_file("example.ppm");
+//!     c.save_to_file("square.ppm").expect("Could not save image");
 //! }
 //! ```
 //!
