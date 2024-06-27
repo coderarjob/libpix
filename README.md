@@ -1,4 +1,4 @@
-# Portable Pixmap based graphics library
+# Graphics library based on Portable Pixmap image format
 
 Simple drawing to frame buffer and seeing the output!
 
@@ -6,10 +6,11 @@ It is increasingly becoming difficult to get a simple buffer and start drawing. 
 understand why this is so - we are not living in DOS times! But still the barrier to start working
 with graphics should not be this hard.
 
-This is not a graphics library or a GUI toolkit, this provides just a buffer where one can put
-pixels then save the buffer to a PPM file and see the render.
+This GUI toolkit, this provides just a buffer where one can put pixels then save the buffer to a PPM
+file and see the output.
 
-Here is my attempt to provide a solution.
+### Why PPM and not any other file format?
+Because its very simple, use and is supported in Linux.
 
 ## Example:
 
