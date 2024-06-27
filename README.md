@@ -10,7 +10,7 @@ This GUI toolkit, this provides just a buffer where one can put pixels then save
 file and see the output.
 
 ### Why PPM and not any other file format?
-Because its very simple, use and is supported in Linux.
+Because its a simple image format ([Wikipedia - Netpbm](https://en.wikipedia.org/wiki/Netpbm)) and is supported in Linux.
 
 ## Example:
 
