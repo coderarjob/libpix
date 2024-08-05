@@ -11,17 +11,15 @@ fn length(l: &Vec2) -> f32 {
 }
 
 fn frag(uv: Vec2, aspect: f32) -> Vec3 {
-    let mut uv = uv.mul(3.0);
+    let mut uv = uv.mul(3.0).fract().sub(0.5).mul(2.0);
     uv.0 *= aspect;
-
-    uv = uv.fract().sub(0.5).mul(2.0);
 
     let mut d = length(&uv) - 0.5;
     d = (d * 8.0).sin() / 8.0;
     d = d.abs();
-    d = 0.06 / d;
+    d = 0.02 / d;
 
-    let col = Vec3(0.1, 0.05, 0.26).mul(d);
+    let col = Vec3(0.10, 0.25, 0.56).mul(d);
     col
 }
 

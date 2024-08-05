@@ -27,6 +27,10 @@ impl Vec2 {
         self.1 = self.1.fract();
         self
     }
+
+    pub fn clone(&self) -> Self {
+        Self(self.0, self.1)
+    }
 }
 
 impl Vec3 {
@@ -59,5 +63,9 @@ impl Vec3 {
         self.1 = self.1.fract();
         self.2 = self.2.fract();
         self
+    }
+
+    pub fn clone(&self) -> Self {
+        Self(self.0, self.1, self.2)
     }
 }
