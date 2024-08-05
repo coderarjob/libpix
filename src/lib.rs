@@ -48,6 +48,9 @@ pub struct Canvas {
     area: Vec<u32>,
 }
 
+mod ds;
+pub use ds::*;
+
 /// Provides a buffer to draw pixels on
 impl Canvas {
     /// Creates a new Canvas of `width` width and `height` size and `format` format.

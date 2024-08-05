@@ -35,4 +35,4 @@ fn main() {
 }
 ```
 
-
+[Other examples](./examples)
