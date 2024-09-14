@@ -1,4 +1,4 @@
-use ppm::{Canvas, PPMFormats, Vec2, Vec3};
+use libpix::{Canvas, PPMFormats, Vec2, Vec3};
 
 const WIDTH: usize = 520;
 const HEIGHT: usize = 520;

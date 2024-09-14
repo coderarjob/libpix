@@ -1,4 +1,4 @@
-use ppm::{Canvas, PPMFormats};
+use libpix::{Canvas, PPMFormats};
 
 fn main() {
     const WIDTH: usize = 400;

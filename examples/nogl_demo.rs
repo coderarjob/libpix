@@ -1,4 +1,4 @@
-use ppm::{Canvas, PPMFormats};
+use libpix::{Canvas, PPMFormats};
 
 const WIDTH: usize = 512;
 const HEIGHT: usize = 512;
